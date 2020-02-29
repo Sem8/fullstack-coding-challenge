@@ -4,79 +4,93 @@ from .serializers import UserSerializer, UserProfileSerializer, ComplaintSeriali
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from datetime import date
+from django.contrib.auth.models import User
 
 # Create your views here.
-# class HomeViewSet(viewsets.ModelViewSet):
-#   queryset = UserProfile.objects.all()
-#   serializer_class = UserProfileSerializer(queryset, many=True)
-#     def list(self, request):
-#       return Response()
+
+# My_queries --
+# Programmer.objects.filter(age__isnull=True)
+# Car.objects.filter(name='Camry')
+# Programmer.objects.count()
+# Programmer.objects.filter(name__endswith='y').count()
+# Programmer.objects.exclude(name__endswith='y').count()
+
 
 class ComplaintViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
+
   queryset = Complaint.objects.all()
-  # print('queryset:', queryset)
   serializer_class = ComplaintSerializer(queryset, many=True)
+  # count = Complaint.objects.count()
+
   def list(self, request):
-    # Get all complaints from the user's district    
-    return Response(self.serializer_class.data)
-
-  # @action(methods=['get'], detail=True)
-  # def openCases(self, request):
-  #   newest = self.get_queryset().order_by('closedate').last()
-  #   queryset = self.get_queryset()
-
-    
+    # Get all complaints from the user's district
+    return Response(self.serializer_class.data)    
+    # return Response(self.serializer_class.data)
+       
 
 class OpenCasesViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
-  first = Complaint.objects.all().order_by('closedate').last()
-  serializer = ComplaintSerializer(first, many=False)
-  # queryset = Complaint.objects.all()
-  # serializer_class = ComplaintSerializer(queryset, many=True)
-  # serializer_class = ComplaintSerializer
-  # def openCases(self, request):
-  # @action(methods=['get'], detail=True)
-  def list(self, request):
-    return Response(self.serializer.data)
-    
-  #   # Get only the open complaints from the user's district
-  #   # newest = self.get_queryset().order_by('closedate').last()
-  #   # queryset = self.get_queryset()
-  #   t = date.today()
-  #   month = date.strftime(t)
-  #   year = t.year
-  #   title = f"MyClub Event Calendar {(month,year)}"
+  queryset = Complaint.objects.filter(closedate__isnull=True)
+  serializer_class = ComplaintSerializer(queryset, many=True)
+  # count = Complaint.objects.filter(closedate__isnull=True).count()
 
-  #   # serializer = self.get_serializer_class()(open)
-  #   # first_data = self.serializer_class.data[0]
-    
-  #   # open = None
-  #   # for open_cases in Complaint.objects.all():
-  #   #   if open_cases.opendate is not None:
-  #   #     open = 
-  #   # all = self.get_queryset()
-  #   # obj = get_object_or_404(all, pk=pk)
-  #   # return Response(serializer.data)
+  def list(self, request):
+    return Response(self.serializer_class.data)
+
 
 
 class ClosedCasesViewSet(viewsets.ModelViewSet):
-  http_method_names = ['get'] 
+  http_method_names = ['get']
+
+  queryset = Complaint.objects.filter(closedate__isnull=False)
+  serializer_class = ComplaintSerializer(queryset, many=True)
+  # count = Complaint.objects.filter(closedate__isnull=False).count() 
+
   def list(self, request):
     # Get only complaints that are close from the user's district
-    return Response()
+    return Response(self.serializer_class.data)
+
     
 class TopComplaintTypeViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
+
+  hashTable = {}
+
+  # complaint_types = Complaint.objects.filter(complaint_type__isnull=False).values('complaint_type')
+  complaint_types = Complaint.objects.values('complaint_type', 'account').filter(complaint_type__isnull=False)
+
+  # count = Complaint.objects.all().values('complaint_type').count()
+  for each_complaint in complaint_types:
+    # print('each_complaint: ', each_complaint)
+    hashTable[each_complaint['complaint_type']] = {'account': each_complaint['account'], 'count': 1}
+
+  for each_complaint_counter in complaint_types:    
+    hashTable[each_complaint_counter['complaint_type']]['count'] += 1 
+  
+  counts_list = hashTable.items()
+  
+  # sorted_counts_list = sorted(counts_list['count'])
+  # serializer_class = ComplaintSerializer(complaint_types, many=True)
+
   def list(self, request):
     # Get the top 3 complaint types from the user's district
-    return Response()
+    return Response(self.counts_list)
 
 
+class UserViewSet(viewsets.ModelViewSet):
+  user_profile_queryset = UserProfile.objects.all()
+  user_profile_serializer = UserProfileSerializer(user_profile_queryset, many=True)
 
-# class HomeViewSet(viewsets.ModelViewSet):
-#   queryset = UserProfile.objects.all()
-#   serializer_class = UserProfileSerializer(queryset, many=True)
-#     def list(self, request):
-#       return Response()
+  user_queryset = User.objects.all()
+  user_serializer = UserSerializer(user_queryset, many=True)
+
+  user_info = []
+  # for user_profile in user_profile_queryset:
+  #   print('profile', user_profile)
+
+  # for user in user_queryset:
+  #   print('user', user)
+  
+  def list(self, request):
+    return Response(self.user_profile_serializer.data)
