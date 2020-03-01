@@ -133,8 +133,8 @@
 // export default Login;
 
 import React, { useState, useEffect } from "react";
-// import { Route, NavLink, BrowserRouter, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
+// import { Route, NavLink, BrowserRouter, Switch } from "react-router-dom";
 // import Navigate from "./Navigate";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
@@ -149,10 +149,7 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
-  },
-  // dense: {
-  //   marginTop: 16
-  // }
+  }
 }));
 
 function Login(props) {

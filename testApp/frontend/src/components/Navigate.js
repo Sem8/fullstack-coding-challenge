@@ -1,79 +1,59 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
+
 import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
-import axios from '../axios-instance.js';
+import axios from "../axios-instance.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
-    "& > *": {
-      margin: theme.spacing(1)
-    }
+    flexGrow: 1
   }
-}));
+});
 
-const Navigate = (props) => {
+const Navigate = props => {
   const classes = useStyles();
-
-  // All complaints state:
-  const [isLoading, setIsLoading] = useState(true)
-  const [allComplaints, setAllComplaints] = useState([]);
+  // const [value, setValue] = React.useState(0);
+  // function handleChange(event, newValue) {
+  //   setValue(newValue);
+  // }
 
   return (
-    <div className={classes.root}>
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        // onClick={signInWithEmailAndPassword}
-        className="sign-in-button"
+    <Paper className={classes.root}>
+      <Tabs
+        // value={value}
+        // onChange={handleChange}
+        indicatorColor="primary"
+        textColor="primary"
+        centered
       >
-        All complaints in my district
-      </Button>
+        <Link to={`/allcomplaints`}>
+          <Tab label="All complaints in my district" />
+        </Link>
 
+        <Link to={`/opencomplaints`}>
+          <Tab label="Open complaints in my district" />
+        </Link>
 
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        // onClick={signInWithEmailAndPassword}
-        className="sign-in-button"
-      >
-        Open complaints in my district
-      </Button>
+        <Link to={`/closedcomplaints`}>
+          <Tab label="Closed complaints in my district" />
+        </Link>
 
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        // onClick={signInWithEmailAndPassword}
-        className="sign-in-button"
-      >
-        Closed complaints in my district
-      </Button>
+        <Link to={`/topcomplaints`}>
+          <Tab label="Top complaints in my district" />
+        </Link>
 
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        // onClick={signInWithEmailAndPassword}
-        className="sign-in-button"
-      >
-      Top complaints in my district
-      </Button>
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        // onClick={signInWithEmailAndPassword}
-        className="sign-in-button"
-      >
-        Complaints by my contituents
-      </Button>
-    </div>
+        <Link to={`/constituentcomplaints`}>
+          <Tab label="Complaints by my contituents" />
+        </Link>
+      </Tabs>
+    </Paper>
   );
 };
 
-export default withRouter(Navigate)
+export default withRouter(Navigate);
