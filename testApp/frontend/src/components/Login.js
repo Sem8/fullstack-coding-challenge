@@ -132,10 +132,13 @@
 
 // export default Login;
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+// import { Route, NavLink, BrowserRouter, Switch } from "react-router-dom";
+import { withRouter } from "react-router";
+// import Navigate from "./Navigate";
+import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
+import { TextField, Button } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -147,13 +150,15 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
   },
-  dense: {
-    marginTop: 16
-  }
+  // dense: {
+  //   marginTop: 16
+  // }
 }));
 
-export default function Login() {
+function Login(props) {
   const classes = useStyles();
+
+  // Handle text input changes
   const [values, setValues] = React.useState({
     name: "",
     password: ""
@@ -163,17 +168,48 @@ export default function Login() {
     setValues({ ...values, [name]: event.target.value });
   };
 
+  // Get the logged in councilman's district:
+  const getDistrict = str => {
+    let splitStr = str.split("-");
+    let district = splitStr[1];
+
+    console.log('distric: ', district);
+
+    localStorage.setItem("councilmanDistrict", district);
+  };
+
+  console.log("password: ", values.password);
+
+  // Handles submit for the login form:
+  const handleLogin = e => {
+    e.preventDefault();
+
+    axios
+      .post("http://localhost:8000/login/", values)
+      .then(res => {
+        console.log("login res:", res);
+
+        localStorage.setItem("councilmanToken", res.data.token);
+        getDistrict(values.password);
+
+        props.history.push(`/navigate`);
+      })
+      .catch(err => {
+        console.log("login error: ", err);
+      });
+  };
+
   return (
     <>
       <h1
         className={classes.container}
         style={{
-          background: "#1976d2",
+          background: "#3f51b5",
           color: "white",
           width: "800px",
           margin: "20px auto",
-          padding: '20px',
-          borderRadius: '20px'
+          padding: "20px",
+          borderRadius: "20px"
         }}
       >
         Welcome! please log in to view your information
@@ -198,6 +234,29 @@ export default function Login() {
           variant="filled"
         />
       </form>
+      
+      <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={handleLogin}
+          className={classes.container}
+          style={{
+            margin: "20px auto",
+            padding: "10px"
+          }}
+        >
+          Sign in
+        </Button>
+              {/* <BrowserRouter>
+          <Switch>
+          <Route exact path="/navigate" component={Navigate} />
+
+          </Switch>
+            
+          </BrowserRouter> */}
     </>
   );
 }
+
+export default withRouter(Login);
