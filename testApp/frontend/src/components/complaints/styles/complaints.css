@@ -1,4 +1,4 @@
-#allComplaints {
+#complaints {
     text-align: center;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
@@ -6,16 +6,16 @@
     width: 100%;
   }
   
-  #allComplaints td, #allComplaints th {
+  #complaints td, #complaints th {
     border: 1px solid #ddd;
     padding: 8px;
   }
   
-  #allComplaints tr:nth-child(even){background-color: #f2f2f2;}
+  #complaints tr:nth-child(even){background-color: #f2f2f2;}
   
-  #allComplaints tr:hover {background-color: #ddd;}
+  #complaints tr:hover {background-color: #ddd;}
   
-  #allComplaints th {
+  #complaints th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: center;

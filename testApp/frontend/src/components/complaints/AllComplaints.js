@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 
 import axios from "../../axios-instance";
-import "./styles/AllComplaints.css";
+import "./styles/complaints.css";
 
 const AllComplaints = props => {
-
   // function to get complaint account number:
   let accountNumber = str => {
     let slicedNum = str.slice(4);
@@ -19,6 +18,7 @@ const AllComplaints = props => {
 
   const councilmanToken = localStorage.getItem("councilmanToken");
 
+  // handles getting all complaints data:
   useEffect(() => {
     axios
       .get(`api/complaints`, {
@@ -38,17 +38,21 @@ const AllComplaints = props => {
 
   return (
     <>
-      <h1 style={{
-            display: "flex",
-            justifyContent: "center",
+      <h1
+        style={{
+          display: "flex",
+          justifyContent: "center",
           background: "#3f51b5",
           color: "white",
           width: "800px",
           margin: "20px auto",
           padding: "10px",
           borderRadius: "20px"
-        }}>All complaints in you district</h1>
-      <table id="allComplaints">
+        }}
+      >
+        All complaints in your district
+      </h1>
+      <table id="complaints">
         <thead>
           <tr>
             <th>Unique Key</th>
@@ -78,6 +82,7 @@ const AllComplaints = props => {
                 "councilmanDistrict"
               );
 
+              // Display complaints data that were made in the logged in councilman's district 
               if (complaintDistNum == parseInt(councilmanDistNum)) {
                 // let uniqueKey = accountNumber(eachComplaint.unique_key);
 

@@ -18,10 +18,13 @@ const useStyles = makeStyles({
 
 const Navigate = props => {
   const classes = useStyles();
-  // const [value, setValue] = React.useState(0);
-  // function handleChange(event, newValue) {
-  //   setValue(newValue);
-  // }
+
+  // Function to log user out:
+  const logout = () => {
+    localStorage.clear();
+    props.history.push('/');
+  }
+
 
   return (
     <Paper className={classes.root}>
@@ -51,6 +54,9 @@ const Navigate = props => {
         <Link to={`/constituentcomplaints`}>
           <Tab label="Complaints by my contituents" />
         </Link>
+        {/* <Link to={`/`}> */}
+          <Tab label="Logout" onClick={logout}/>
+        {/* </Link> */}
       </Tabs>
     </Paper>
   );
