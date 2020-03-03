@@ -1,20 +1,6 @@
-// import React from 'react';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <h1>Welcome</h1>
-
-//     </div>
-//   );
-// }
-
-// export default App;
-
 import React from "react";
 import { Route, NavLink, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-
 import Main from "./components/Main";
 import HomePage from './components/homePage/HomePage';
 import Navigate from "./components/Navigate";
@@ -29,12 +15,6 @@ function App() {
   return (
     <>
       <div className="main-wrapper-app">
-        {/* <div className="component-wrapper">          
-          <Navigate />
-        </div> */}
-
-        {/* <Switch> */}
-
         <Route exact path="/" component={Main} />
         <Route path="/homepage" component={HomePage} />
         {/* <Route path="/navigate" component={Navigate} /> */}
