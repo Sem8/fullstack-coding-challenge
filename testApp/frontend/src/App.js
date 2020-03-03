@@ -16,6 +16,7 @@ import { Route, NavLink, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
 
 import Main from "./components/Main";
+import HomePage from './components/homePage/HomePage';
 import Navigate from "./components/Navigate";
 import AllComplaints from "./components/complaints/AllComplaints";
 import ClosedComplaints from "./components/complaints/ClosedComplaints";
@@ -34,6 +35,7 @@ function App() {
         {/* <Switch> */}
 
         <Route exact path="/" component={Main} />
+        <Route path="/homepage" component={HomePage} />
         <Route path="/navigate" component={Navigate} />
         <Route path="/allcomplaints" component={AllComplaints} />
         <Route path="/opencomplaints" component={OpenComplaints} />

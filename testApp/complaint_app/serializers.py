@@ -8,10 +8,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id','username', 'first_name','last_name')
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    # BONUS Task: Flatten out the User object inside of UserProfile.
+    # BONUS Task -- Done!: Flatten out the User object inside of UserProfile 
+    # users = UserSerializer(many=True)
     class Meta:
         model = UserProfile
         fields = ('id','user','full_name','district','party','borough')
+        depth=1
+
+
 
 class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:

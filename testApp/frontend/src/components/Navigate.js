@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 
 import { makeStyles } from "@material-ui/core/styles";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import { LinearProgress, Paper, Tabs, Tab, Button } from "@material-ui/core";
 
 import axios from "../axios-instance.js";
 
@@ -22,9 +19,8 @@ const Navigate = props => {
   // Function to log user out:
   const logout = () => {
     localStorage.clear();
-    props.history.push('/');
-  }
-
+    props.history.push("/");
+  };
 
   return (
     <Paper className={classes.root}>
@@ -54,9 +50,17 @@ const Navigate = props => {
         <Link to={`/constituentcomplaints`}>
           <Tab label="Complaints by my contituents" />
         </Link>
-        {/* <Link to={`/`}> */}
-          <Tab label="Logout" onClick={logout}/>
-        {/* </Link> */}
+
+        <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={logout}
+          >
+            Logout
+          </Button>
+
+        {/* <Tab label="Logout" onClick={logout} /> */}
       </Tabs>
     </Paper>
   );

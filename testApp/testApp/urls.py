@@ -22,5 +22,4 @@ urlpatterns = [
     path('login/',obtain_auth_token, name='login'),
     path('api/complaints', include('complaint_app.urls')),
     # path('api/complaints/', include('complaint_app.urls')),
-
 ]

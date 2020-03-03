@@ -68,26 +68,50 @@ class TopComplaintTypeViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
 
   hashTable = {}
+  cleanedHashTable = {}
+  sortedHashTable = {}
 
   # complaint_types = Complaint.objects.filter(complaint_type__isnull=False).values('complaint_type')
   complaint_types = Complaint.objects.values('complaint_type', 'account').filter(complaint_type__isnull=False)
 
-  # count = Complaint.objects.all().values('complaint_type').count()
-  for each_complaint in complaint_types:
-    # print('each_complaint: ', each_complaint)
-    hashTable[each_complaint['complaint_type']] = {'account': each_complaint['account'], 'count': 1}
+  for each_comp_dist in complaint_types:
+    if each_comp_dist['account'] not in hashTable:
+      hashTable[each_comp_dist['account']] = {each_comp_dist['complaint_type']: 0}
+    else:
+      if each_comp_dist['complaint_type'] not in hashTable[each_comp_dist['account']]:
+        hashTable[each_comp_dist['account']][each_comp_dist['complaint_type']] = 0
+      else:
+        hashTable[each_comp_dist['account']][each_comp_dist['complaint_type']] += 1
 
-  for each_complaint_counter in complaint_types:    
-    hashTable[each_complaint_counter['complaint_type']]['count'] += 1 
+  # hashTableItems = hashTable.items()
+  hashTableItems = None
+
   
-  counts_list = hashTable.items()
+
+  for each_dist in hashTable:
+    cleanedHashTable[each_dist] = {key:val for key, val in hashTable[each_dist].items() if val != 0}
+    # cleanedHashTable[each_dist] = [[key, val] for key, val in hashTable[each_dist] if val != 0]
   
-  # sorted_counts_list = sorted(counts_list['count'])
-  # serializer_class = ComplaintSerializer(complaint_types, many=True)
+  for one_district in cleanedHashTable:
+    cleanedHashTable[one_district] = sorted(cleanedHashTable[one_district].items(), key = lambda kv:(kv[1], kv[0]), reverse=True)
+
+  # testing = cleanedHashTable 
 
   def list(self, request):
     # Get the top 3 complaint types from the user's district
-    return Response(self.counts_list)
+    return Response(self.cleanedHashTable)
+
+
+class ConstituentViewSet(viewsets.ModelViewSet):
+  http_method_names = ['get']
+
+  queryset = Complaint.objects.filter(council_dist__isnull=False).filter(complaint_type__isnull=False)
+  serializer_class = ComplaintSerializer(queryset, many=True)
+  # count = Complaint.objects.filter(closedate__isnull=False).count() 
+
+  def list(self, request):
+    # Get only complaints that are close from the user's district
+    return Response(self.serializer_class.data)
 
 
 class UserViewSet(viewsets.ModelViewSet):

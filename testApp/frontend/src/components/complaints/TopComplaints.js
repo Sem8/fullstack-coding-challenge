@@ -1,15 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 
-import axios from '../../axios-instance';
+import axios from "../../axios-instance";
 import "./styles/complaints.css";
 
+import Navigate from "../Navigate";
+
 const TopComplaints = () => {
-  // function to get complaint account number:
-  let accountNumber = str => {
-    let slicedNum = str.slice(4);
-    return parseInt(slicedNum);
+  // Function to get the 0 padded version of the district number for numbers less than 0, ex. '1' -> '01'
+  let districtPadding = districtNum => {
+    if (parseInt(districtNum) < 10) {
+      return `0${districtNum}`;
+    } else {
+      return `${districtNum}`;
+    }
   };
+
+  // // function to sort counts of complaints descending:
+  // let sortDescending = (a, b) => {
+  //   let aCount = a[1].count;
+  //   let bCount = b[1].count;
+
+  //   let comparison = 0;
+
+  //   if (aCount > bCount) {
+  //     comparison = 1;
+  //   } else if (aCount < bCount) {
+  //     comparison = -1;
+  //   }
+
+  //   return comparison * -1;
+  // };
+
+  // // Filter for complaints only from logged in councilman's district:
+  // let matchingTopComplaint = (complaints) => {
+  //   let userDistrict = accountNumber(complaints[1].account);
+  //   let councilmanDistNum = parseInt(localStorage.getItem("councilmanDistrict"));
+
+  //   return userDistrict == councilmanDistNum;
+
+  // }
 
   // All complaints state:
   const [isLoading, setIsLoading] = useState(true);
@@ -25,9 +55,27 @@ const TopComplaints = () => {
         headers: { Authorization: `Token ${councilmanToken}` }
       })
       .then(res => {
-        console.log("open complaints res: ", res);
+        // console.log("top complaints res: ", res);
+        // console.log("top complaints res: ", res.data);
+        console.log("top complaint access: ", res.data);
 
-        setTopComplaints(res.data);
+        let councilmanDistrict = districtPadding(
+          localStorage.getItem("councilmanDistrict")
+        );
+        console.log(
+          "top complaint access: ",
+          res.data[`NYCC${councilmanDistrict}`]
+        );
+        let topComplaintsData = res.data[`NYCC${councilmanDistrict}`];
+        // setTopComplaints(topComplaintsData);
+
+        // sort the top complaints data by the number of counts of complaint type by descending order
+        // topComplaintsData.sort(sortDescending);
+
+        // Get the top complaint types that was made in the logged in councilman's district
+
+        setTopComplaints(topComplaintsData);
+        // console.log('topComplaints: ', topComplaints);
         setIsLoading(false);
       })
       .catch(err => {
@@ -37,6 +85,7 @@ const TopComplaints = () => {
 
   return (
     <>
+      <Navigate />
       <h1
         style={{
           display: "flex",
@@ -49,50 +98,42 @@ const TopComplaints = () => {
           borderRadius: "20px"
         }}
       >
-        Top complaints in your district
+        Top 3 complaints in your district
       </h1>
       <table id="complaints">
         <thead>
           <tr>
             <th>Complaint Type</th>
             <th>Number of Complaints Made</th>
-
           </tr>
         </thead>
         <tbody>
           {topComplaints &&
-            topComplaints.map((topComplaintType, index) => {
-              // console.log("topComplaintType account: ", topComplaintType["account"]);
+            topComplaints.slice(0, 3).map((topComplaintType, index) => {
+              // console.log("topComplaintType name: ", topComplaintType[0]);
+              // console.log("topComplaintType count: ", topComplaintType[1]);
 
-              // Get number of the district complaint is being made in
-              let complaintDistNum = accountNumber(topComplaintType[1]["account"]);
-              console.log('complaintDistNum: ', complaintDistNum);
-
-              console.log('topComplaintName: ', topComplaintType[0]);
-              console.log('topComplaintCount: ', topComplaintType[1]['count']);
-
-              // Get councilman district
-              let councilmanDistNum = localStorage.getItem(
-                "councilmanDistrict"
+              return (
+                <>
+                  <tr key={index + 1}>
+                    <td>{topComplaintType[0]}</td>
+                    <td>{topComplaintType[1]}</td>
+                  </tr>
+                </>
               );
-
-              // Display top complaints that were made in the logged in councilman's district
-              if (complaintDistNum == parseInt(councilmanDistNum)) {
-
-                return (
-                  <>
-                    <tr key={index + 1}>
-                      <td>{topComplaintType[0]}</td>
-                      <td>{topComplaintType[1]['count']}</td> 
-                    </tr>
-                  </>
-                );
-              }
             })}
         </tbody>
       </table>
+      <p>
+        * If you don't see any complaints then you had no complaints in your
+        district{" "}
+      </p>
+      <p>
+        * If you see less than 3 complaints here then you had less than 3
+        complaints in your district{" "}
+      </p>
     </>
   );
-}
+};
 
 export default withRouter(TopComplaints);

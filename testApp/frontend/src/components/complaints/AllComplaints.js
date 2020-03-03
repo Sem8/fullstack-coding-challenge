@@ -4,8 +4,10 @@ import { withRouter } from "react-router";
 import axios from "../../axios-instance";
 import "./styles/complaints.css";
 
+import Navigate from '../Navigate';
+
 const AllComplaints = props => {
-  // function to get complaint account number:
+  // function to get complaint account number getting rid of 0 padding:
   let accountNumber = str => {
     let slicedNum = str.slice(4);
 
@@ -16,6 +18,7 @@ const AllComplaints = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [allComplaints, setAllComplaints] = useState([]);
 
+  // Get logged in user's token from local storage to access protected endpoints
   const councilmanToken = localStorage.getItem("councilmanToken");
 
   // handles getting all complaints data:
@@ -28,6 +31,7 @@ const AllComplaints = props => {
       .then(res => {
         console.log("all complaints res: ", res);
 
+        // Set incoming data to state:
         setAllComplaints(res.data);
         setIsLoading(false);
       })
@@ -38,6 +42,7 @@ const AllComplaints = props => {
 
   return (
     <>
+    <Navigate />
       <h1
         style={{
           display: "flex",

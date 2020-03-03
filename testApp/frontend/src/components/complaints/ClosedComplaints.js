@@ -4,14 +4,17 @@ import { withRouter } from "react-router";
 import axios from '../../axios-instance';
 import "./styles/complaints.css";
 
+import Navigate from '../Navigate';
+
 const ClosedComplaints = (props) => {
-  // function to get complaint account number:
+
+  // function to get complaint account number getting rid of 0 padding:
   let accountNumber = str => {
     let slicedNum = str.slice(4);
     return parseInt(slicedNum);
   };
 
-  // All complaints state:
+  // Closed complaints state:
   const [isLoading, setIsLoading] = useState(true);
   const [closedComplaints, setClosedComplaints] = useState([]);
 
@@ -27,6 +30,7 @@ const ClosedComplaints = (props) => {
       .then(res => {
         console.log("closed complaints res: ", res);
 
+        // Set incoming data to state:
         setClosedComplaints(res.data);
         setIsLoading(false);
       })
@@ -37,6 +41,7 @@ const ClosedComplaints = (props) => {
 
   return (
     <>
+    <Navigate />
       <h1
         style={{
           display: "flex",
