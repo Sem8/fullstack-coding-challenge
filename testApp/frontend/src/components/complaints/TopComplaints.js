@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-
 import axios from "../../axios-instance";
 import "./styles/complaints.css";
-
 import Navigate from "../Navigate";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const TopComplaints = () => {
   // Function to get the 0 padded version of the district number for numbers less than 0, ex. '1' -> '01'
@@ -86,52 +85,58 @@ const TopComplaints = () => {
   return (
     <>
       <Navigate />
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          background: "#3f51b5",
-          color: "white",
-          width: "800px",
-          margin: "20px auto",
-          padding: "10px",
-          borderRadius: "20px"
-        }}
-      >
-        Top 3 complaints in your district
-      </h1>
-      <table id="complaints">
-        <thead>
-          <tr>
-            <th>Complaint Type</th>
-            <th>Number of Complaints Made</th>
-          </tr>
-        </thead>
-        <tbody>
-          {topComplaints &&
-            topComplaints.slice(0, 3).map((topComplaintType, index) => {
-              // console.log("topComplaintType name: ", topComplaintType[0]);
-              // console.log("topComplaintType count: ", topComplaintType[1]);
+      {isLoading ? (
+        <LinearProgress color="primary" />
+      ) : (
+        <>
+          <h1
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              background: "#3f51b5",
+              color: "white",
+              width: "800px",
+              margin: "20px auto",
+              padding: "10px",
+              borderRadius: "20px"
+            }}
+          >
+            Top 3 complaints in your district
+          </h1>
+          <table id="complaints">
+            <thead>
+              <tr>
+                <th>Complaint Type</th>
+                <th>Number of Complaints Made</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topComplaints &&
+                topComplaints.slice(0, 3).map((topComplaintType, index) => {
+                  // console.log("topComplaintType name: ", topComplaintType[0]);
+                  // console.log("topComplaintType count: ", topComplaintType[1]);
 
-              return (
-                <>
-                  <tr key={index + 1}>
-                    <td>{topComplaintType[0]}</td>
-                    <td>{topComplaintType[1]}</td>
-                  </tr>
-                </>
-              );
-            })}
-        </tbody>
-      </table>
-      <p>
-        * If you don't see any complaints then you had no complaints in your
-        district{" "}
-      </p>
-      <p>
-        * If you see less than 3 complaints here then you had less than 3
-        complaints in your district{" "}
-      </p>
+                  return (
+                    <>
+                      <tr key={index + 1}>
+                        <td>{topComplaintType[0]}</td>
+                        <td>{topComplaintType[1]}</td>
+                      </tr>
+                    </>
+                  );
+                })}
+            </tbody>
+          </table>
+          <p>
+            * If you don't see any complaints then you had no complaints in your
+            district{" "}
+          </p>
+          <p>
+            * If you see less than 3 complaints here then you had less than 3
+            complaints in your district{" "}
+          </p>
+        </>
+      )}
     </>
   );
 };

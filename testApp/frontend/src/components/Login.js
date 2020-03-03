@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, LinearProgress } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -34,7 +34,7 @@ function Login(props) {
     let splitStr = str.split("-");
     let district = splitStr[1];
 
-    console.log('distric: ', district);
+    // console.log('distric: ', district);
 
     localStorage.setItem("councilmanDistrict", district);
   };
@@ -55,6 +55,7 @@ function Login(props) {
       })
       .catch(err => {
         console.log("login error: ", err);
+        props.history.push(`/errorpage`);
       });
   };
 
@@ -93,20 +94,20 @@ function Login(props) {
           variant="filled"
         />
       </form>
-      
+
       <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={handleLogin}
-          className={classes.container}
-          style={{
-            margin: "20px auto",
-            padding: "10px"
-          }}
-        >
-          Sign in
-        </Button>
+        type="submit"
+        variant="contained"
+        color="primary"
+        onClick={handleLogin}
+        className={classes.container}
+        style={{
+          margin: "20px auto",
+          padding: "10px"
+        }}
+      >
+        Sign in
+      </Button>
     </>
   );
 }
