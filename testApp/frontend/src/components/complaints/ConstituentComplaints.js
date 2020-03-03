@@ -5,7 +5,7 @@ import "./styles/complaints.css";
 import Navigate from "../Navigate";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-const ConstituentComplaints = () => {
+const ConstituentComplaints = (props) => {
   // function to get complaint account number getting rid of 0 padding:
   let accountNumber = str => {
     let slicedNum = str.slice(4);
@@ -27,14 +27,15 @@ const ConstituentComplaints = () => {
         headers: { Authorization: `Token ${councilmanToken}` }
       })
       .then(res => {
-        console.log("constituent complaints res: ", res);
-
-        // Set incoming data to state:
+        // Set incoming data to state and loading to false:
         setConstituentComplaints(res.data);
         setIsLoading(false);
       })
       .catch(err => {
         console.log("open complaints err: ", err);
+
+        // Redirect to 404 Error Page upon error:
+        props.history.push(`/errorpage`);
       });
   }, []);
 
@@ -78,13 +79,10 @@ const ConstituentComplaints = () => {
             <tbody>
               {constituentComplaints &&
                 constituentComplaints.map(eachConstituentComplaint => {
-                  // console.log("eachConstituentComplaint council_dist: ", eachConstituentComplaint["council_dist"]);
-
                   // Get number of the district the complaint maker lives in:
                   let complaintDistNum = accountNumber(
                     eachConstituentComplaint["council_dist"]
                   );
-                  // console.log('complaintDistNum: ', complaintDistNum);
 
                   // Get councilman district:
                   let councilmanDistNum = localStorage.getItem(
@@ -93,8 +91,6 @@ const ConstituentComplaints = () => {
 
                   // Display complaints from councilman's constituents where complaint council_dist matches councilman's district:
                   if (complaintDistNum == parseInt(councilmanDistNum)) {
-                    // let uniqueKey = accountNumber(eachConstituentComplaint.unique_key);
-
                     return (
                       <>
                         <tr

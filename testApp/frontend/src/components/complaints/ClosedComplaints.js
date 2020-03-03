@@ -16,6 +16,7 @@ const ClosedComplaints = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [closedComplaints, setClosedComplaints] = useState([]);
 
+  // Get token from local storage:
   const councilmanToken = localStorage.getItem("councilmanToken");
 
   // handles getting only open complaints data:
@@ -26,14 +27,15 @@ const ClosedComplaints = props => {
         headers: { Authorization: `Token ${councilmanToken}` }
       })
       .then(res => {
-        console.log("closed complaints res: ", res);
-
-        // Set incoming data to state:
+        // Set incoming data to state and loading to false:
         setClosedComplaints(res.data);
         setIsLoading(false);
       })
       .catch(err => {
         console.log("closed complaints err: ", err);
+
+        // Redirect to 404 Error Page upon error:
+        props.history.push(`/errorpage`);
       });
   }, []);
 
@@ -77,13 +79,10 @@ const ClosedComplaints = props => {
             <tbody>
               {closedComplaints &&
                 closedComplaints.map(eachComplaint => {
-                  // console.log("eachComplaint account: ", eachComplaint["account"]);
-
-                  // Get number of the district complaint is being made in
+                  // Get number of the district complaint is being made in:
                   let complaintDistNum = accountNumber(
                     eachComplaint["account"]
                   );
-                  // console.log('complaintDistNum: ', complaintDistNum);
 
                   // Get councilman district
                   let councilmanDistNum = localStorage.getItem(
@@ -92,8 +91,6 @@ const ClosedComplaints = props => {
 
                   // Display closed complaints that were made in the logged in councilman's district
                   if (complaintDistNum == parseInt(councilmanDistNum)) {
-                    // let uniqueKey = accountNumber(eachComplaint.unique_key);
-
                     return (
                       <>
                         <tr key={accountNumber(eachComplaint.unique_key)}>

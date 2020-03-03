@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 function Login(props) {
   const classes = useStyles();
 
-  // Handle text input changes
+  // Handle text input changes:
   const [values, setValues] = React.useState({
     name: "",
     password: ""
@@ -34,8 +34,6 @@ function Login(props) {
     let splitStr = str.split("-");
     let district = splitStr[1];
 
-    // console.log('distric: ', district);
-
     localStorage.setItem("councilmanDistrict", district);
   };
 
@@ -46,8 +44,7 @@ function Login(props) {
     axios
       .post("http://localhost:8000/login/", values)
       .then(res => {
-        // console.log("login res:", res);
-
+        // Set user token and district to local storage and route to logged in user home page:
         localStorage.setItem("councilmanToken", res.data.token);
         getDistrict(values.password);
 
@@ -55,6 +52,8 @@ function Login(props) {
       })
       .catch(err => {
         console.log("login error: ", err);
+
+        // If not logged in properly redirect to 404 Error Page
         props.history.push(`/errorpage`);
       });
   };

@@ -16,7 +16,7 @@ const OpenComplaints = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [openComplaints, setOpenComplaints] = useState([]);
 
-  // Get logged in user's token from local storage to access protected endpoints
+  // Get logged in user's token from local storage to access protected endpoints:
   const councilmanToken = localStorage.getItem("councilmanToken");
 
   // handles getting only open complaints data:
@@ -27,14 +27,15 @@ const OpenComplaints = props => {
         headers: { Authorization: `Token ${councilmanToken}` }
       })
       .then(res => {
-        console.log("open complaints res: ", res);
-
-        // Set incoming data to state:
+        // Set incoming data to state and loading to false:
         setOpenComplaints(res.data);
         setIsLoading(false);
       })
       .catch(err => {
         console.log("open complaints err: ", err);
+
+        // Redirect to 404 Error Page upon error:
+        props.history.push(`/errorpage`);
       });
   }, []);
 
@@ -78,23 +79,18 @@ const OpenComplaints = props => {
             <tbody>
               {openComplaints &&
                 openComplaints.map(eachComplaint => {
-                  // console.log("eachComplaint account: ", eachComplaint["account"]);
-
-                  // Get number of the district complaint is being made in
+                  // Get number of the district complaint is being made in:
                   let complaintDistNum = accountNumber(
                     eachComplaint["account"]
                   );
-                  // console.log('complaintDistNum: ', complaintDistNum);
 
-                  // Get councilman district
+                  // Get councilman district:
                   let councilmanDistNum = localStorage.getItem(
                     "councilmanDistrict"
                   );
 
-                  // Display open complaints that were made in the logged in councilman's district
+                  // Display open complaints that were made in the logged in councilman's district:
                   if (complaintDistNum == parseInt(councilmanDistNum)) {
-                    // let uniqueKey = accountNumber(eachComplaint.unique_key);
-
                     return (
                       <>
                         <tr key={accountNumber(eachComplaint.unique_key)}>
@@ -116,6 +112,10 @@ const OpenComplaints = props => {
                 })}
             </tbody>
           </table>
+          <p>
+            * If you don't see any complaints then you have no complaints in
+            your district{" "}
+          </p>
         </>
       )}
     </>
