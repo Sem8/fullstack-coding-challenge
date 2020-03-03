@@ -29,12 +29,15 @@ const AllComplaints = props => {
       .then(res => {
         console.log("all complaints res: ", res);
 
-        // Set incoming data to state:
+        // Set incoming data to state and loading to false:
         setAllComplaints(res.data);
         setIsLoading(false);
       })
       .catch(err => {
         console.log("all complaints err: ", err);
+
+        // Redirect to 404 Error Page upon error:
+        props.history.push(`/errorpage`);
       });
   }, []);
 
@@ -78,23 +81,18 @@ const AllComplaints = props => {
             <tbody>
               {allComplaints &&
                 allComplaints.map(eachComplaint => {
-                  // console.log("eachComplaint account: ", eachComplaint["account"]);
-
-                  // Get number of the district complaint is being made in
+                  // Get number of the district complaint is being made in:
                   let complaintDistNum = accountNumber(
                     eachComplaint["account"]
                   );
-                  // console.log('complaintDistNum: ', complaintDistNum);
 
-                  // Get councilman district
+                  // Get councilman district:
                   let councilmanDistNum = localStorage.getItem(
                     "councilmanDistrict"
                   );
 
-                  // Display complaints data that were made in the logged in councilman's district
+                  // Display complaints data that were made in the logged in councilman's district:
                   if (complaintDistNum == parseInt(councilmanDistNum)) {
-                    // let uniqueKey = accountNumber(eachComplaint.unique_key);
-
                     return (
                       <>
                         <tr key={accountNumber(eachComplaint.unique_key)}>

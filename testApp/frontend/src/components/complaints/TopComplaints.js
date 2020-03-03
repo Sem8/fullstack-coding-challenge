@@ -5,7 +5,7 @@ import "./styles/complaints.css";
 import Navigate from "../Navigate";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-const TopComplaints = () => {
+const TopComplaints = (props) => {
   // Function to get the 0 padded version of the district number for numbers less than 0, ex. '1' -> '01'
   let districtPadding = districtNum => {
     if (parseInt(districtNum) < 10) {
@@ -15,35 +15,11 @@ const TopComplaints = () => {
     }
   };
 
-  // // function to sort counts of complaints descending:
-  // let sortDescending = (a, b) => {
-  //   let aCount = a[1].count;
-  //   let bCount = b[1].count;
-
-  //   let comparison = 0;
-
-  //   if (aCount > bCount) {
-  //     comparison = 1;
-  //   } else if (aCount < bCount) {
-  //     comparison = -1;
-  //   }
-
-  //   return comparison * -1;
-  // };
-
-  // // Filter for complaints only from logged in councilman's district:
-  // let matchingTopComplaint = (complaints) => {
-  //   let userDistrict = accountNumber(complaints[1].account);
-  //   let councilmanDistNum = parseInt(localStorage.getItem("councilmanDistrict"));
-
-  //   return userDistrict == councilmanDistNum;
-
-  // }
-
-  // All complaints state:
+  // Top complaints state:
   const [isLoading, setIsLoading] = useState(true);
   const [topComplaints, setTopComplaints] = useState([]);
 
+  // Get token from local storage:
   const councilmanToken = localStorage.getItem("councilmanToken");
 
   // handles getting only open complaints data:
@@ -54,31 +30,24 @@ const TopComplaints = () => {
         headers: { Authorization: `Token ${councilmanToken}` }
       })
       .then(res => {
-        // console.log("top complaints res: ", res);
-        // console.log("top complaints res: ", res.data);
-        console.log("top complaint access: ", res.data);
 
+        // Get 0 padded version of logged in user's district:
         let councilmanDistrict = districtPadding(
           localStorage.getItem("councilmanDistrict")
         );
-        console.log(
-          "top complaint access: ",
-          res.data[`NYCC${councilmanDistrict}`]
-        );
+
+        // Access the logged in councilman's top complaints based on his district:
         let topComplaintsData = res.data[`NYCC${councilmanDistrict}`];
-        // setTopComplaints(topComplaintsData);
 
-        // sort the top complaints data by the number of counts of complaint type by descending order
-        // topComplaintsData.sort(sortDescending);
-
-        // Get the top complaint types that was made in the logged in councilman's district
-
+        // Set the topComplaints data to state and loading to false:
         setTopComplaints(topComplaintsData);
-        // console.log('topComplaints: ', topComplaints);
         setIsLoading(false);
       })
       .catch(err => {
-        console.log("open complaints err: ", err);
+        console.log("top complaints err: ", err);
+
+        // Redirect to 404 Error Page upon error:
+        props.history.push(`/errorpage`);
       });
   }, []);
 
@@ -113,9 +82,6 @@ const TopComplaints = () => {
             <tbody>
               {topComplaints &&
                 topComplaints.slice(0, 3).map((topComplaintType, index) => {
-                  // console.log("topComplaintType name: ", topComplaintType[0]);
-                  // console.log("topComplaintType count: ", topComplaintType[1]);
-
                   return (
                     <>
                       <tr key={index + 1}>

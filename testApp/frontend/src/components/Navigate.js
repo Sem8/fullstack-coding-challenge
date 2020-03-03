@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
-
 import { makeStyles } from "@material-ui/core/styles";
-import { LinearProgress, Paper, Tabs, Tab, Button } from "@material-ui/core";
-
+import { Paper, Tabs, Tab, Button } from "@material-ui/core";
 import axios from "../axios-instance.js";
 
 const useStyles = makeStyles({
@@ -52,15 +50,13 @@ const Navigate = props => {
         </Link>
 
         <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={logout}
-          >
-            Logout
-          </Button>
-
-        {/* <Tab label="Logout" onClick={logout} /> */}
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={logout}
+        >
+          Logout
+        </Button>
       </Tabs>
     </Paper>
   );
